@@ -1,20 +1,53 @@
 package com.gability.scala
 
-import com.holdenkarau.spark.testing.{DataFrameSuiteBase, DatasetSuiteBase, SparkSessionProvider}
-import org.apache.spark.sql.{DataFrame, Dataset, Row}
+import com.gability.scala.utils.LogicUtils
+import com.holdenkarau.spark.testing._
+import TestingUtils._
+import org.apache.spark.sql.{Dataset, Row, SparkSession}
 import org.scalatest._
-import org.scalatest.matchers.should.Matchers
+class MainTest extends FunSuite with DataFrameSuiteBase with DatasetSuiteBase {
 
-class MainTest extends FunSuite with Matchers with DataFrameSuiteBase {
-  test("Testing prepare data logic ") {
-    val spark = SparkSessionProvider._sparkSession
+  var utilFun: LogicUtils = _
+  test("Testing Dataframe equality ") {
     import spark.implicits._
 
+    utilFun = LogicUtils(spark)
+    val actual: Dataset[Row] = utilFun.convertSeq2Df(sampleDt, columnNames)
 
-    val actual: Dataset[Row] = Main.convertSeq2Df(Seq(("scala", "2.11.12"), ("spark", "2.4.5")))
-    actual.show()
-    val expected: Dataset[Row] = Seq(("scala", "2.11.12"), ("spark", "2.4.5")).toDF("lib", "version")
-    expected.show()
+    val expected: Dataset[Row] = sampleDt.toDF(columnNames: _*)
     assertDataFrameEquals(expected, actual)
+
+  }
+
+  test("Testing Dataset equality ") {
+
+    import spark.implicits._
+
+    utilFun = LogicUtils(spark)
+
+    val actual: Dataset[DependencyLibraries] =
+      utilFun.convertSeq2Ds[DependencyLibraries](sampleDt, columnNames)
+
+    val expected: Dataset[DependencyLibraries] =
+      sampleDt.toDF(columnNames: _*).as[DependencyLibraries]
+    assertDatasetEquals(expected, actual)
+
+  }
+
+  test("Testing Datasets using Seq assert equality") {
+
+    import spark.implicits._
+
+    utilFun = LogicUtils(spark)
+
+    val actual: Seq[DependencyLibraries] =
+      utilFun
+        .convertSeq2Ds[DependencyLibraries](sampleDt, columnNames)
+        .collect()
+        .toSeq
+
+    val expected: Seq[DependencyLibraries] = sampleDS
+    assert(expected, actual)
+
   }
 }

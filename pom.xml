@@ -8,10 +8,29 @@
     <parent>
         <groupId>com.gability.scala</groupId>
         <artifactId>scala-starter-parent</artifactId>
-        <version>1.30</version>
+        <version>1.34</version>
     </parent>
 
-    <artifactId>spark-sandbox-2.11</artifactId>
+    <artifactId>spark-sandbox</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <project.scm.id>github-spark-sandbox</project.scm.id>
+    </properties>
+
+    <distributionManagement>
+        <repository>
+            <id>github-spark-sandbox</id>
+            <name>GitHub spark-sandbox Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/moustafaalaa/spark-sandbox</url>
+        </repository>
+    </distributionManagement>
+
+    <scm>
+        <connection>scm:git:https://github.com/moustafaalaaa/spark-sandbox.git</connection>
+        <developerConnection>scm:git:https://github.com/moustafaalaaa/spark-sandbox.git</developerConnection>
+        <url>https://github.com/moustafaalaaa/spark-sandbox</url>
+        <tag>HEAD</tag>
+    </scm>
 
 </project>
